@@ -17,7 +17,7 @@ Automaton readAutomatonFromFile(const std::string &filename) {
 
     if (!file) {
         std::cerr << "Failed to open file." << std::endl;
-        exit(1);
+        throw std::runtime_error("Failed to open file.");
     }
 
     file >> automaton.size;
@@ -78,9 +78,30 @@ bool checkForWords(const Automaton &automaton, const std::string &w0) {
 }
 
 
-
 int main() {
-    Automaton automaton = readAutomatonFromFile("D:\\sysProg2\\automation.txt");
+    Automaton automaton; //= readAutomatonFromFile("D:\\sysProg2\\automation.txt");
+    while (true) {
+        std::cout << "Do you want to enter a file path? (yes/no): ";
+        std::string userInput;
+        std::cin >> userInput;
+        std::string filePath;
+        try{
+            if (userInput == "yes") {
+                std::cout << "Enter the file path: ";
+                std::cin >> filePath;
+                automaton = readAutomatonFromFile(filePath);
+                break;
+            } else if (userInput == "no") {
+                std::cout << "Program will exit. Goodbye!" << std::endl;
+                return 0;
+            } else {
+                std::cout << "Invalid input. Please enter 'yes' or 'no'." << std::endl;
+            }
+        }
+        catch (const std::exception& e) {
+            std::cout << "Error: " << e.what() << std::endl;
+        }
+    }
     std::string w0;
 
     std::cout << "Enter w0: ";
@@ -89,7 +110,8 @@ int main() {
     if (checkForWords(automaton, w0)) {
         std::cout << "The automaton admits words of the form w = w1 w0 w2." << std::endl;
     } else {
-        std::cout << "The automaton does not admit words of the form w = w1 w0 w2." << std::endl;
+        std::cout << "The automaton does not admit words of the form w = w1 w0 w2."
+                     "the word w(0)=ab must be allowed as an example" << std::endl;
     }
 
     return 0;
